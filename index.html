@@ -1,0 +1,112 @@
+<html>
+	<body>
+		<canvas id="folha" width="1000" height="500"></canvas>
+		<script>
+			window.onload = function() {
+				setInterval(executar, 1000 / 30);
+			}
+				var folhaDesenho = document.getElementById("folha")
+				var areaDesenho = folhaDesenho.getContext("2d");
+
+				var larguraCampo = 1000;
+				var alturaCampo = 500;
+				var larguraRede = 5;
+				var larguraBola = 10;
+				var alturaRaquete = 60;
+				var posicaoJogador1 = 30;
+				var posicaoJogador2 = 30;
+				var efeitoraquete = 0.3;
+				var posicaoBolaX = posicaoBolaY = 1;
+				var velocidadeBolaposicaoX = velocidadeBolaposicaoY = 5;
+				var pontuacaojogador1 = pontuacaojogador2 = 0;
+				var nomeJogador1 = prompt();
+				var velocidadeJogador2 = 10;
+
+			folhaDesenho.addEventListener('mousemove', function(e) {
+				posicaoJogador1 = e.clientY - alturaRaquete/2;
+			});
+
+			function executar() {
+				areaDesenho.fillStyle = "#0000ff";
+				areaDesenho.fillRect(0, 0, larguraCampo, alturaCampo);
+
+				areaDesenho.fillStyle = '#ffffff';
+
+				//Linha
+				areaDesenho.fillRect(larguraCampo/2 - larguraRede/2, 0, larguraRede, alturaCampo);
+
+				//Raquete 1
+				areaDesenho.fillRect(0, posicaoJogador1, larguraRede, alturaRaquete);
+
+				//Raquete 2
+				areaDesenho.fillRect(larguraCampo - larguraRede, posicaoJogador2, larguraRede, alturaRaquete);
+
+				//Bola "Quadrada"
+				areaDesenho.fillRect(posicaoBolaX - larguraBola/2, posicaoBolaY - larguraBola/2, larguraBola, larguraBola);
+
+				//Escrever a pontuação dos jogadores
+				areaDesenho.fillText(nomeJogador1+" - "+pontuacaojogador1+" pontos", 100, 100);
+				areaDesenho.fillText("Computador - "+pontuacaojogador2+" pontos", larguraCampo - 200, 100);
+
+				posicaoBolaX = posicaoBolaX + velocidadeBolaposicaoX;
+				posicaoBolaY = posicaoBolaY + velocidadeBolaposicaoY;
+
+				//Verifica a lateral superior
+				if (posicaoBolaY < 0 && velocidadeBolaposicaoY < 0) {
+					velocidadeBolaposicaoY = -velocidadeBolaposicaoY;
+				}
+
+				//Verifica a lateral inferior
+				if (posicaoBolaY > alturaCampo && velocidadeBolaposicaoY > 0) {
+					velocidadeBolaposicaoY = -velocidadeBolaposicaoY;
+				}
+
+				//Verifica se o jogador 2 fez um ponto
+				if (posicaoBolaX < 0) {
+					if (posicaoBolaY > posicaoJogador1 && posicaoBolaY < posicaoJogador1 + alturaRaquete) {
+						//Rebater a bola
+						velocidadeBolaposicaoX = -velocidadeBolaposicaoX;
+
+
+						var diferencaY = posicaoBolaY - (posicaoJogador1 + alturaRaquete/2);
+						velocidadeBolaposicaoY = diferencaY * efeitoRaquete;
+					}else{
+						//Pontos para o jogador 2
+						pontuacaojogador2++;
+						//Colocar a bola no centro
+						posicaoBolaX = larguraCampo/2;
+						posicaoBolaY = larguraCampo/2;
+						velocidadeBolaposicaoX = -velocidadeBolaposicaoX;
+						velocidadeBolaposicaoY = 3;
+					}
+				}
+
+				//Verifica se o jogador 1 fez ponto
+				if (posicaoBolaX > larguraCampo) {
+					if (posicaoBolaY > posicaoJogador2 && posicaoBolaY < posicaoJogador2 + alturaRaquete) {
+						//Rebater a bola
+						velocidadeBolaposicaoX = -velocidadeBolaposicaoX;
+
+						var diferencaY = posicaoBolaY - (posicaoJogador2 + alturaRaquete / 2);
+						velocidadeBolaposicaoY = diferencaY * efeitoRaquete;
+					}else{
+						//Pontos do jogador 1
+						pontuacaojogador1++;
+
+						//Colocar no centro
+						posicaoBolaX = larguraCampo/2;
+						posicaoBolaY = larguraCampo/2;
+						velocidadeBolaposicaoX = -velocidadeBolaposicaoX;
+						velocidadeBolaposicaoY = 3;
+					}
+				}
+				//Atualiza a posição do jogador 2
+				if (posicaoJogador2 + alturaRaquete/2 < posicaoBolaY) {
+					posicaoJogador2 = posicaoJogador2 + velocidadeJogador2;
+				}else{
+					posicaoJogador2 = posicaoJogador2 - velocidadeJogador2;
+				}
+			}
+		</script>
+	</body>
+</html>
